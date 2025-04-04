@@ -9,13 +9,13 @@ public class Employee {
     public Employee() {}
 
     public Employee(int id, String name, String position, double salary) {
-        this.id       = id;
-        this.name     = name;
+        this.id = id;
+        this.name = name;
         this.position = position;
-        this.salary   = salary;
+        this.salary = salary;
     }
 
-    // Getters & setters
+    // Getters & Setters
     public int getId() { return id; }
     public void setId(int id) { this.id = id; }
 

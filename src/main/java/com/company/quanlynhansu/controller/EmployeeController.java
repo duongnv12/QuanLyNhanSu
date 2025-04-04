@@ -35,6 +35,12 @@ public class EmployeeController {
     public boolean deleteEmployee(int employeeId) {
         return employeeDAO.deleteEmployee(employeeId);
     }
+
+    // Trong EmployeeController.java
+    public boolean deleteAllEmployees() {
+        return employeeDAO.deleteAllEmployees();
+    }
+
     public List<Employee> searchEmployees(String keyword) {
         return employeeDAO.searchEmployees(keyword);
     }

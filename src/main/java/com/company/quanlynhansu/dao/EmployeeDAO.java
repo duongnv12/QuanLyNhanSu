@@ -8,28 +8,27 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class EmployeeDAO {
-
-    // Lấy danh sách nhân viên
+    // Lấy danh sách tất cả nhân viên từ bảng employees
     public List<Employee> getAllEmployees() {
         List<Employee> employeeList = new ArrayList<>();
-        String sql = "SELECT id, name, position, salary FROM employees";
+        String sql = "SELECT id, name, position, salary FROM employees ORDER BY id ASC"; // sắp xếp theo thứ tự tăng dần của id
         try (Connection conn = DatabaseUtil.getConnection();
              Statement stmt = conn.createStatement();
              ResultSet rs = stmt.executeQuery(sql)) {
-            while (rs.next()) {
-                Employee emp = new Employee(
-                        rs.getInt("id"),
-                        rs.getString("name"),
-                        rs.getString("position"),
-                        rs.getDouble("salary")
-                );
+            while (rs.next()){
+                Employee emp = new Employee();
+                emp.setId(rs.getInt("id"));
+                emp.setName(rs.getString("name"));
+                emp.setPosition(rs.getString("position"));
+                emp.setSalary(rs.getDouble("salary"));
                 employeeList.add(emp);
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
         }
         return employeeList;
     }
+    
 
     // Thêm nhân viên
     public boolean addEmployee(Employee employee) {
@@ -76,6 +75,38 @@ public class EmployeeDAO {
         }
     }
 
+    public boolean deleteAllEmployees() {
+        String deleteTimekeepingSql = "DELETE FROM timekeeping";
+        String deleteEmployeesSql = "DELETE FROM employees";
+        String resetSequenceSql = "ALTER SEQUENCE employees_id_seq RESTART WITH 1";
+        
+        try (Connection conn = DatabaseUtil.getConnection()) {
+            // Bắt đầu transaction
+            conn.setAutoCommit(false);
+            try (Statement stmt = conn.createStatement()) {
+                // Xóa các bản ghi liên quan trong bảng timekeeping trước
+                stmt.executeUpdate(deleteTimekeepingSql);
+                // Xóa toàn bộ dữ liệu trong bảng employees
+                int rowsAffected = stmt.executeUpdate(deleteEmployeesSql);
+                // Reset sequence của bảng employees, đảm bảo id được sắp xếp lại
+                stmt.executeUpdate(resetSequenceSql);
+                
+                conn.commit();
+                System.out.println("Đã xóa " + rowsAffected + " dòng trong bảng employees và reset sequence id.");
+                return true;
+            } catch (SQLException e) {
+                conn.rollback();
+                e.printStackTrace();
+                return false;
+            } finally {
+                conn.setAutoCommit(true);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }    
+    
     // Tìm kiếm nhân viên theo tên
     public List<Employee> searchEmployees(String keyword) {
         List<Employee> result = new ArrayList<>();
