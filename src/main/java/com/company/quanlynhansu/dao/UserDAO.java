@@ -78,6 +78,27 @@ public class UserDAO {
         }
     }
     // Bạn có thể thêm các phương thức khác như update hoặc xoá người dùng tương tự như EmployeeDAO
+    public User authenticate(String username, String password) {
+        String sql = "SELECT id, username, password, role FROM users WHERE username = ? AND password = ?";
+        try (Connection conn = DatabaseUtil.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, username);
+            pstmt.setString(2, password); // Trong thực tế, mật khẩu nên được mã hoá
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    User user = new User();
+                    user.setId(rs.getInt("id"));
+                    user.setUsername(rs.getString("username"));
+                    user.setPassword(rs.getString("password"));
+                    user.setRole(rs.getString("role"));
+                    return user;
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 
     // Các phương thức khác như update hoặc xoá người dùng có thể được bổ sung tương tự.
 }

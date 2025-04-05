@@ -5,6 +5,7 @@ com\company\quanlynhansu\dao\EmployeeDAO.class
 com\company\quanlynhansu\controller\EmployeeController.class
 com\company\quanlynhansu\App.class
 com\company\quanlynhansu\view\admin\UserManagementPanel$1.class
+com\company\quanlynhansu\view\manager\ManagerLeaveManagementPanel$1.class
 com\company\quanlynhansu\model\Employee.class
 com\company\quanlynhansu\view\employee\EmployeeDashboardFrame.class
 com\company\quanlynhansu\view\common\EmployeeTableModel.class

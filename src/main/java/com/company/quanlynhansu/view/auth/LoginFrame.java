@@ -3,6 +3,9 @@ package com.company.quanlynhansu.view.auth;
 import com.company.quanlynhansu.dao.UserDAO;
 import com.company.quanlynhansu.model.User;
 import com.company.quanlynhansu.view.admin.AdminDashboardFrame;
+import com.company.quanlynhansu.view.employee.EmployeeDashboardFrame;
+// Nếu bạn có triển khai giao diện Manager, import nó, ví dụ:
+import com.company.quanlynhansu.view.manager.ManagerDashboardFrame;
 import org.mindrot.jbcrypt.BCrypt;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -80,10 +83,17 @@ public class LoginFrame extends JFrame {
             if (BCrypt.checkpw(plainPassword, user.getPassword())) {
                 logger.info("Xác thực mật khẩu thành công cho user: {}", username);
                 JOptionPane.showMessageDialog(this, "Đăng nhập thành công với vai trò: " + user.getRole());
+                // Phân hướng dashboard theo vai trò của người dùng
                 if ("ADMIN".equalsIgnoreCase(user.getRole()) || "HR".equalsIgnoreCase(user.getRole())) {
                     new AdminDashboardFrame().setVisible(true);
+                } else if ("EMPLOYEE".equalsIgnoreCase(user.getRole())) {
+                    new EmployeeDashboardFrame().setVisible(true);
+                } else if ("MANAGER".equalsIgnoreCase(user.getRole())) {
+                    // Nếu đã có ManagerDashboardFrame, mở nó ra
+                    new ManagerDashboardFrame().setVisible(true);
+                    JOptionPane.showMessageDialog(this, "Chức năng cho vai trò MANAGER chưa được triển khai, vui lòng kiểm tra lại.");
                 } else {
-                    JOptionPane.showMessageDialog(this, "Chức năng cho vai trò này chưa được triển khai!");
+                    JOptionPane.showMessageDialog(this, "Vai trò không được hỗ trợ!");
                 }
                 dispose();
             } else {
